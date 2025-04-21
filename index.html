@@ -458,7 +458,7 @@
 
     <script>
         // Create QR code
-        // Create QR code
+        
 new QRCode(document.getElementById("qrcode"), {
     text: window.location.href,
     width: 180,
@@ -469,23 +469,32 @@ new QRCode(document.getElementById("qrcode"), {
 });
 
 // Google Sheets API URL (replace with your Apps Script URL)
-const API_URL = 'https://script.google.com/macros/s/AKfycbxTBczuubjPTAANpLtEMrLz9vwdZU-LpnhmVwrVtNLhRRWPV8UfIG6FOCVx9_7A7oxxSQ/exec'; // e.g., https://script.google.com/macros/s/YourScriptID/exec
+// Google Sheets API URL
+const API_URL = 'https://script.google.com/macros/s/AKfycbxTBczuubjPTAANpLtEMrLz9vwdZU-LpnhmVwrVtNLhRRWPV8UfIG6FOCVx9_7A7oxxSQ/exec'; // Replace with your Apps Script URL
 
 // Display messages from Google Sheets
 const displayMessages = () => {
     const container = document.getElementById('wishesContainer');
-    container.innerHTML = ''; // Clear the display
+    container.innerHTML = '<p>Loading wishes...</p>';
 
-    fetch(API_URL)
-        .then(res => res.json())
+    fetch(API_URL, { method: 'GET', mode: 'cors' })
+        .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+            return res.json();
+        })
         .then(wishes => {
+            container.innerHTML = '';
+            if (wishes.length === 0) {
+                container.innerHTML = '<p>No wishes yet. Be the first to share!</p>';
+                return;
+            }
             wishes.forEach(msg => {
                 const card = document.createElement('div');
                 card.className = 'card wish-card animate-in';
                 card.innerHTML = `
                     <h3>${msg.name}</h3>
                     <p>"${msg.message}"</p>
-                    ${msg.photo ? `<img src="${msg.photo}" alt="Guest photo" class="guest-photo" style="max-width: 100%; border-radius: 8px; margin-top: 8px;">` : ''}
+                    ${msg.photo ? `<img src="${msg.photo}" alt="Guest photo" class="guest-photo">` : ''}
                 `;
                 container.appendChild(card);
             });
@@ -511,46 +520,57 @@ document.getElementById('guestbookForm').addEventListener('submit', function(e) 
     }
 
     const submitWish = (photoData = '') => {
+        const payload = {
+            name: name.slice(0, 50),
+            message: message.slice(0, 500),
+            photo: photoData
+        };
+        console.log('Submitting payload:', payload); // Debug
         fetch(API_URL, {
             method: 'POST',
-            body: JSON.stringify({
-                name: name.slice(0, 50),
-                message: message.slice(0, 500),
-                photo: photoData
-            }),
-            headers: { 'Content-Type': 'application/json' }
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         })
-            .then(res => res.text())
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                return res.text();
+            })
             .then(response => {
+                console.log('Response:', response); // Debug
                 if (response === 'Success') {
                     document.getElementById('guestbookForm').reset();
                     displayMessages();
                     alert('Thank you for your message!');
                 } else {
-                    alert('Error submitting your message. Please try again.');
+                    alert('Error submitting your message: ' + response);
                 }
             })
             .catch(err => {
                 console.error('Error submitting wish:', err);
-                alert('Error submitting your message. Please try again.');
+                alert('Error submitting your message: ' + err.message);
             });
     };
 
     if (photoFile) {
-        // Validate photo size (e.g., < 1MB)
         if (photoFile.size > 1000000) {
             alert('Photo must be less than 1MB.');
             return;
         }
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const imageData = event.target.result; // Base64 string
+        const img = new Image();
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        img.onload = () => {
+            canvas.width = img.width > 800 ? 800 : img.width;
+            canvas.height = img.height * (canvas.width / img.width);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg', 0.7);
             submitWish(imageData);
         };
-        reader.onerror = () => {
+        img.onerror = () => {
             alert('Error reading photo. Please try again.');
         };
-        reader.readAsDataURL(photoFile);
+        img.src = URL.createObjectURL(photoFile);
     } else {
         submitWish();
     }
@@ -582,27 +602,24 @@ function updateCountdown() {
     }
 }
 
-// Update countdown every second
 const timer = setInterval(updateCountdown, 1000);
 updateCountdown();
 
-// Fix gallery image loading (replace placeholder logic)
+// Fix gallery image loading
 window.addEventListener('DOMContentLoaded', () => {
-    // Ensure gallery images load correctly (update with real image paths)
     const galleryImages = [
-        { id: 'photo1', src: 'image1.jpg' },
-        { id: 'photo2', src: 'image2.jpg' },
-        { id: 'photo3', src: 'image3.jpg' },
-        { id: 'photo4', src: 'image4.jpg' }
+        { id: 'photo1', src: '/images/image1.jpg' },
+        { id: 'photo2', src: '/images/image2.jpg' },
+        { id: 'photo3', src: '/images/image3.jpg' },
+        { id: 'photo4', src: '/images/image4.jpg' }
     ];
     galleryImages.forEach(item => {
         const container = document.getElementById(item.id);
         const img = container.querySelector('img');
-        img.src = item.src; // Ensure correct paths in your project
+        img.src = item.src;
         img.alt = `Winnie Through the Years - Photo`;
     });
 
-    // Staggered animation for cards
     const cards = document.querySelectorAll('.animate-in');
     cards.forEach((card, index) => {
         setTimeout(() => {
@@ -611,6 +628,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }, 100 * index);
     });
 });
+
     </script>
 </body>
 </html>
