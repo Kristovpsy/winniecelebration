@@ -347,6 +347,13 @@
             .hero h1 { font-size: 1.8rem; }
             .grid { grid-template-columns: 1fr; }
         }
+        .guest-photo {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: var(--border-radius-sm);
+    margin-top: var(--spacing-xs);
+}
     </style>
 </head>
 <body>
@@ -445,165 +452,165 @@
     </div>
 
     <footer>
-        <p>With love from all your friends, family & colleagues</p>
+        <p>celebrating Winnie  Lai-Solarin on her 60th birthday  and glorious  retirement.</p>
         <p>© 2025 - Celebrating Winnie Lai-Solarin</p>
     </footer>
 
     <script>
         // Create QR code
-        new QRCode(document.getElementById("qrcode"), {
-            text: window.location.href,
-            width: 180,
-            height: 180,
-            colorDark: "#8b3a62",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-        });
+        // Create QR code
+new QRCode(document.getElementById("qrcode"), {
+    text: window.location.href,
+    width: 180,
+    height: 180,
+    colorDark: "#8b3a62",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+});
 
-        // Sample messages data - in a real implementation, this would come from a database
-        const messages = [
-        {
-            name: "FMLD and FMAF STAFF",
-            message: "Winne, your guidance over the years has been invaluable. Wishing you a retirement as wonderful as you are! Happy 60th!"
-        },
-        {
-            name: "AKIGBOGUN KEHINDE",
-            message: "To an amazing boss - may your retirement be filled with all the things you love most!"
-        },
-        {
-            name: "Michael",
-            message: "Congratulations on your retirement and 60th birthday! Your mentorship has shaped my career in ways I can't begin to express. Enjoy this wonderful new chapter!"
-        },
-        {
-            name: "PRECIOUS",
-            message: "Winne, you've been an inspiration to all of us. Thank you for your years of dedication. Wishing you joy, relaxation, and many new adventures!"
-        }
-    ];
+// Google Sheets API URL (replace with your Apps Script URL)
+const API_URL = 'https://script.google.com/macros/s/AKfycbxTBczuubjPTAANpLtEMrLz9vwdZU-LpnhmVwrVtNLhRRWPV8UfIG6FOCVx9_7A7oxxSQ/exec'; // e.g., https://script.google.com/macros/s/YourScriptID/exec
 
-    const displayMessages = () => {
-        const container = document.getElementById('wishesContainer');
-        container.innerHTML = ''; // Clear the display
+// Display messages from Google Sheets
+const displayMessages = () => {
+    const container = document.getElementById('wishesContainer');
+    container.innerHTML = ''; // Clear the display
 
-        messages.forEach(msg => {
-            const card = document.createElement('div');
-            card.className = 'card wish-card animate-in';
-
-            card.innerHTML = `
-                <h3>${msg.name}</h3>
-                <p>"${msg.message}"</p>
-                ${msg.image ? `<img src="${msg.image}" alt="Guest photo" class="guest-photo">` : ''}
-            `;
-
-            container.appendChild(card);
-        });
-    };
-
-    document.getElementById('guestbookForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const name = document.getElementById('guestName').value;
-        const message = document.getElementById('guestMessage').value;
-        const photoInput = document.getElementById('guestPhoto');
-        const photoFile = photoInput.files[0];
-
-        if (photoFile) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const imageData = event.target.result;
-
-                messages.unshift({
-                    name: name,
-                    message: message,
-                    image: imageData
-                });
-
-                displayMessages();
-                document.getElementById('guestbookForm').reset();
-                alert('Thank you for your message!');
-            };
-
-            reader.readAsDataURL(photoFile);
-        } else {
-            messages.unshift({
-                name: name,
-                message: message
+    fetch(API_URL)
+        .then(res => res.json())
+        .then(wishes => {
+            wishes.forEach(msg => {
+                const card = document.createElement('div');
+                card.className = 'card wish-card animate-in';
+                card.innerHTML = `
+                    <h3>${msg.name}</h3>
+                    <p>"${msg.message}"</p>
+                    ${msg.photo ? `<img src="${msg.photo}" alt="Guest photo" class="guest-photo" style="max-width: 100%; border-radius: 8px; margin-top: 8px;">` : ''}
+                `;
+                container.appendChild(card);
             });
+        })
+        .catch(err => {
+            console.error('Error fetching wishes:', err);
+            container.innerHTML = '<p>Unable to load wishes. Please try again later.</p>';
+        });
+};
 
-            displayMessages();
-            this.reset();
-            alert('Thank you for your message!');
-        }
-    });
+// Handle form submission
+document.getElementById('guestbookForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-    // Initial render
-    displayMessages();
+    const name = document.getElementById('guestName').value.trim();
+    const message = document.getElementById('guestMessage').value.trim();
+    const photoInput = document.getElementById('guestPhoto');
+    const photoFile = photoInput.files[0];
 
-        // Countdown timer
-        const countdownDate = new Date("May 15, 2025 12:00:00 GMT+0100");
-
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const distance = countdownDate - now;
-
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        document.getElementById("days").innerHTML = String(days).padStart(2, '0');
-        document.getElementById("hours").innerHTML = String(hours).padStart(2, '0');
-        document.getElementById("minutes").innerHTML = String(minutes).padStart(2, '0');
-        document.getElementById("seconds").innerHTML = String(seconds).padStart(2, '0');
-
-        if (distance < 0) {
-            clearInterval(timer);
-            document.getElementById("countdown").innerHTML = "<p>The celebration has begun!</p>";
-        }
+    if (!name || !message) {
+        alert('Please enter your name and message.');
+        return;
     }
 
-    // Update countdown every second
-    const timer = setInterval(updateCountdown, 1000);
-
-    // Initial call to display immediately
-    updateCountdown();
-
-        // Load images - in an actual implementation, you would use real image URLs
-        // Since we can't directly use the uploaded images, we're using placeholder images for demonstration purposes
-        window.addEventListener('DOMContentLoaded', () => {
-            // In a real implementation, these would be actual image paths
-            document.getElementById('heroImage').src = '/api/placeholder/150/150';
-            
-            // "Through the Years" photos
-            const photoContainers = [
-                document.getElementById('image1.jpg'),
-                document.getElementById('image2.jpg'),
-                document.getElementById('image3.jpg'),
-                document.getElementById('image4.jpg')
-            ];
-            
-            photoContainers.forEach((container, index) => {
-                const img = document.createElement('img');
-                img.src = `/api/placeholder/${300 + index}/${300 + index}`;
-                img.alt = `Winne Through the Years - Photo ${index + 1}`;
-                container.appendChild(img);
+    const submitWish = (photoData = '') => {
+        fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                name: name.slice(0, 50),
+                message: message.slice(0, 500),
+                photo: photoData
+            }),
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(res => res.text())
+            .then(response => {
+                if (response === 'Success') {
+                    document.getElementById('guestbookForm').reset();
+                    displayMessages();
+                    alert('Thank you for your message!');
+                } else {
+                    alert('Error submitting your message. Please try again.');
+                }
+            })
+            .catch(err => {
+                console.error('Error submitting wish:', err);
+                alert('Error submitting your message. Please try again.');
             });
-            
-            // Initialize other functionality
-            updateCountdown();
-            displayMessages();
-            
-            // Staggered animation for cards
-            const cards = document.querySelectorAll('.animate-in');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, 100 * index);
-            });
-            
-            // Update countdown every second
-            const x = setInterval(updateCountdown, 1000);
-        });
+    };
+
+    if (photoFile) {
+        // Validate photo size (e.g., < 1MB)
+        if (photoFile.size > 1000000) {
+            alert('Photo must be less than 1MB.');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imageData = event.target.result; // Base64 string
+            submitWish(imageData);
+        };
+        reader.onerror = () => {
+            alert('Error reading photo. Please try again.');
+        };
+        reader.readAsDataURL(photoFile);
+    } else {
+        submitWish();
+    }
+});
+
+// Initial render
+displayMessages();
+
+// Countdown timer
+const countdownDate = new Date("May 15, 2025 12:00:00 GMT+0100");
+
+function updateCountdown() {
+    const now = new Date().getTime();
+    const distance = countdownDate - now;
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById("days").innerHTML = String(days).padStart(2, '0');
+    document.getElementById("hours").innerHTML = String(hours).padStart(2, '0');
+    document.getElementById("minutes").innerHTML = String(minutes).padStart(2, '0');
+    document.getElementById("seconds").innerHTML = String(seconds).padStart(2, '0');
+
+    if (distance < 0) {
+        clearInterval(timer);
+        document.getElementById("countdown").innerHTML = "<p>The celebration has begun!</p>";
+    }
+}
+
+// Update countdown every second
+const timer = setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// Fix gallery image loading (replace placeholder logic)
+window.addEventListener('DOMContentLoaded', () => {
+    // Ensure gallery images load correctly (update with real image paths)
+    const galleryImages = [
+        { id: 'photo1', src: 'image1.jpg' },
+        { id: 'photo2', src: 'image2.jpg' },
+        { id: 'photo3', src: 'image3.jpg' },
+        { id: 'photo4', src: 'image4.jpg' }
+    ];
+    galleryImages.forEach(item => {
+        const container = document.getElementById(item.id);
+        const img = container.querySelector('img');
+        img.src = item.src; // Ensure correct paths in your project
+        img.alt = `Winnie Through the Years - Photo`;
+    });
+
+    // Staggered animation for cards
+    const cards = document.querySelectorAll('.animate-in');
+    cards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100 * index);
+    });
+});
     </script>
 </body>
 </html>
