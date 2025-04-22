@@ -302,13 +302,7 @@
             font-style: italic;
         }
 
-        .guest-photo {
-            max-width: 100%;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: var(--border-radius-sm);
-            margin-top: var(--spacing-xs);
-        }
+        
 
         .african-pattern {
             background-image: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)), 
@@ -443,10 +437,15 @@
     });
 
     // Google Sheets API URL
-    const API_URL = 'https://script.google.com/macros/s/AKfycbx_0RIa5r0L72agP-tXe2Biy6shD8PDhpdoTKIZY_tx4WV8H5HJVGEczXxPIvw9IalGtw/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbz_bjPRcmXiil8aGygU9Hfr5kqCCruX_uMP8gFedf7KXB6yUgJbAeTehmkapBLLSpwW/exec';
+const sanitizeHTML = (str) => {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    };
 
     // Display messages from Google Sheets
-    const displayMessages = () => {
+   const displayMessages = () => {
         const container = document.getElementById('wishesContainer');
         container.innerHTML = '<p>Loading wishes...</p>';
 
@@ -456,14 +455,14 @@
                 return res.json();
             })
             .then(wishes => {
+                console.log('Fetched wishes:', wishes); // Debug
                 container.innerHTML = wishes.length ? '' : '<p>No wishes yet. Be the first to share!</p>';
                 wishes.forEach(msg => {
                     const card = document.createElement('div');
                     card.className = 'card wish-card animate-in';
                     card.innerHTML = `
-                        <h3>${msg.name}</h3>
-                        <p>"${msg.message}"</p>
-                        ${msg.photo ? `<img src="${msg.photo}" alt="Guest photo" class="guest-photo">` : ''}
+                        <h3>${sanitizeHTML(msg.name)}</h3>
+                        <p>"${sanitizeHTML(msg.message)}"</p>
                     `;
                     container.appendChild(card);
                 });
@@ -476,6 +475,7 @@
 
     // Initial render
     displayMessages();
+        setInterval(displayMessages, 30000);
 
     // Countdown timer
     const countdownDate = new Date("May 15, 2025 12:00:00 GMT+0100");
