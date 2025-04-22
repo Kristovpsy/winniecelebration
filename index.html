@@ -405,21 +405,8 @@
             <div class="stack">
                 <h2 class="section-title">Sign the Guestbook</h2>
                 <div class="card">
-                    <form id="guestbookForm" class="stack">
-                        <div class="form-group">
-                            <label class="label" for="guestName">Your Name</label>
-                            <input type="text" id="guestName" class="input" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="label" for="guestMessage">Your Message</label>
-                            <textarea id="guestMessage" class="input textarea" rows="4" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label class="label" for="guestPhoto">Upload Photo (optional)</label>
-                            <input type="file" id="guestPhoto" accept="image/*">
-                        </div>
-                        <button type="submit" class="button">Submit Your Wishes</button>
-                    </form>
+                    <!-- Replace with your Google Form iframe -->
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdSLMKdnzXhFCjKOvjAmU4o2ycytd7dk2I0NVcEoVnWrFTP8A/viewform?embedded=true" width="640" height="507" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
                 </div>
             </div>
 
@@ -428,23 +415,22 @@
                 <div id="wishesContainer" class="stack">
                     <!-- Messages will appear here -->
                 </div>
-                
             </div>
 
             <div class="stack">
                 <h2 class="section-title">Through the Years</h2>
                 <div class="grid grid-sm">
                     <div class="gallery-item" id="photo1">
-                        <img src="image1.jpg">
+                        <img src="/images/image1.jpg" alt="Winnie Photo 1">
                     </div>
                     <div class="gallery-item" id="photo2">
-                        <img src="image2.jpg">
+                        <img src="/images/image2.jpg" alt="Winnie Photo 2">
                     </div>
                     <div class="gallery-item" id="photo3">
-                        <img src="image3.jpg">
+                        <img src="/images/image3.jpg" alt="Winnie Photo 3">
                     </div>
                     <div class="gallery-item" id="photo4">
-                        <img src="image4.jpg">
+                        <img src="/images/image4.jpg" alt="Winnie Photo 4">
                     </div>
                 </div>
             </div>
@@ -452,183 +438,105 @@
     </div>
 
     <footer>
-        <p>celebrating Winnie  Lai-Solarin on her 60th birthday  and glorious  retirement.</p>
+        <p>With love from all your friends, family & colleagues</p>
         <p>© 2025 - Celebrating Winnie Lai-Solarin</p>
     </footer>
 
     <script>
-        // Create QR code
-        
-new QRCode(document.getElementById("qrcode"), {
-    text: window.location.href,
-    width: 180,
-    height: 180,
-    colorDark: "#8b3a62",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
-});
+    // Create QR code pointing to the Google Form
+    new QRCode(document.getElementById("qrcode"), {
+        text: "https://docs.google.com/forms/d/e/1FAIpQLSdSLMKdnzXhFCjKOvjAmU4o2ycytd7dk2I0NVcEoVnWrFTP8A/viewform?usp=sharing ", // Replace with your Google Form’s shareable link
+        width: 180,
+        height: 180,
+        colorDark: "#8b3a62",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
 
-// Google Sheets API URL (replace with your Apps Script URL)
-// Google Sheets API URL
-const API_URL = 'https://script.google.com/macros/s/AKfycbxTBczuubjPTAANpLtEMrLz9vwdZU-LpnhmVwrVtNLhRRWPV8UfIG6FOCVx9_7A7oxxSQ/exec'; // Replace with your Apps Script URL
+    // Google Sheets API URL (Apps Script for fetching responses)
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx_0RIa5r0L72agP-tXe2Biy6shD8PDhpdoTKIZY_tx4WV8H5HJVGEczXxPIvw9IalGtw/exec'; // Replace with your new Apps Script URL
 
-// Display messages from Google Sheets
-const displayMessages = () => {
-    const container = document.getElementById('wishesContainer');
-    container.innerHTML = '<p>Loading wishes...</p>';
+    // Display messages from Google Sheets
+    const displayMessages = () => {
+        const container = document.getElementById('wishesContainer');
+        container.innerHTML = '<p>Loading wishes...</p>';
 
-    fetch(API_URL, { method: 'GET', mode: 'cors' })
-        .then(res => {
-            if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-            return res.json();
-        })
-        .then(wishes => {
-            container.innerHTML = '';
-            if (wishes.length === 0) {
-                container.innerHTML = '<p>No wishes yet. Be the first to share!</p>';
-                return;
-            }
-            wishes.forEach(msg => {
-                const card = document.createElement('div');
-                card.className = 'card wish-card animate-in';
-                card.innerHTML = `
-                    <h3>${msg.name}</h3>
-                    <p>"${msg.message}"</p>
-                    ${msg.photo ? `<img src="${msg.photo}" alt="Guest photo" class="guest-photo">` : ''}
-                `;
-                container.appendChild(card);
-            });
-        })
-        .catch(err => {
-            console.error('Error fetching wishes:', err);
-            container.innerHTML = '<p>Unable to load wishes. Please try again later.</p>';
-        });
-};
-
-// Handle form submission
-document.getElementById('guestbookForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const name = document.getElementById('guestName').value.trim();
-    const message = document.getElementById('guestMessage').value.trim();
-    const photoInput = document.getElementById('guestPhoto');
-    const photoFile = photoInput.files[0];
-
-    if (!name || !message) {
-        alert('Please enter your name and message.');
-        return;
-    }
-
-    const submitWish = (photoData = '') => {
-        const payload = {
-            name: name.slice(0, 50),
-            message: message.slice(0, 500),
-            photo: photoData
-        };
-        console.log('Submitting payload:', payload); // Debug
-        fetch(API_URL, {
-            method: 'POST',
-            mode: 'cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
+        fetch(API_URL, { method: 'GET', mode: 'cors' })
             .then(res => {
                 if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-                return res.text();
+                return res.json();
             })
-            .then(response => {
-                console.log('Response:', response); // Debug
-                if (response === 'Success') {
-                    document.getElementById('guestbookForm').reset();
-                    displayMessages();
-                    alert('Thank you for your message!');
-                } else {
-                    alert('Error submitting your message: ' + response);
-                }
+            .then(wishes => {
+                container.innerHTML = wishes.length ? '' : '<p>No wishes yet. Be the first to share!</p>';
+                wishes.forEach(msg => {
+                    const card = document.createElement('div');
+                    card.className = 'card wish-card animate-in';
+                    card.innerHTML = `
+                        <h3>${msg.name}</h3>
+                        <p>"${msg.message}"</p>
+                        ${msg.photo ? `<img src="${msg.photo}" alt="Guest photo" class="guest-photo">` : ''}
+                    `;
+                    container.appendChild(card);
+                });
             })
             .catch(err => {
-                console.error('Error submitting wish:', err);
-                alert('Error submitting your message: ' + err.message);
+                console.error('Error fetching wishes:', err);
+                container.innerHTML = '<p>Unable to load wishes. Please try again later.</p>';
             });
     };
 
-    if (photoFile) {
-        if (photoFile.size > 1000000) {
-            alert('Photo must be less than 1MB.');
-            return;
+    // Initial render
+    displayMessages();
+
+    // Countdown timer
+    const countdownDate = new Date("May 15, 2025 12:00:00 GMT+0100");
+
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = countdownDate - now;
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("days").innerHTML = String(days).padStart(2, '0');
+        document.getElementById("hours").innerHTML = String(hours).padStart(2, '0');
+        document.getElementById("minutes").innerHTML = String(minutes).padStart(2, '0');
+        document.getElementById("seconds").innerHTML = String(seconds).padStart(2, '0');
+
+        if (distance < 0) {
+            clearInterval(timer);
+            document.getElementById("countdown").innerHTML = "<p>The celebration has begun!</p>";
         }
-        const img = new Image();
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        img.onload = () => {
-            canvas.width = img.width > 800 ? 800 : img.width;
-            canvas.height = img.height * (canvas.width / img.width);
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            const imageData = canvas.toDataURL('image/jpeg', 0.7);
-            submitWish(imageData);
-        };
-        img.onerror = () => {
-            alert('Error reading photo. Please try again.');
-        };
-        img.src = URL.createObjectURL(photoFile);
-    } else {
-        submitWish();
     }
-});
 
-// Initial render
-displayMessages();
+    const timer = setInterval(updateCountdown, 1000);
+    updateCountdown();
 
-// Countdown timer
-const countdownDate = new Date("May 15, 2025 12:00:00 GMT+0100");
+    // Fix gallery image loading
+    window.addEventListener('DOMContentLoaded', () => {
+        const galleryImages = [
+            { id: 'photo1', src: '/images/image1.jpg' },
+            { id: 'photo2', src: '/images/image2.jpg' },
+            { id: 'photo3', src: '/images/image3.jpg' },
+            { id: 'photo4', src: '/images/image4.jpg' }
+        ];
+        galleryImages.forEach(item => {
+            const container = document.getElementById(item.id);
+            const img = container.querySelector('img');
+            img.src = item.src;
+            img.alt = `Winnie Through the Years - Photo`;
+        });
 
-function updateCountdown() {
-    const now = new Date().getTime();
-    const distance = countdownDate - now;
-
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    document.getElementById("days").innerHTML = String(days).padStart(2, '0');
-    document.getElementById("hours").innerHTML = String(hours).padStart(2, '0');
-    document.getElementById("minutes").innerHTML = String(minutes).padStart(2, '0');
-    document.getElementById("seconds").innerHTML = String(seconds).padStart(2, '0');
-
-    if (distance < 0) {
-        clearInterval(timer);
-        document.getElementById("countdown").innerHTML = "<p>The celebration has begun!</p>";
-    }
-}
-
-const timer = setInterval(updateCountdown, 1000);
-updateCountdown();
-
-// Fix gallery image loading
-window.addEventListener('DOMContentLoaded', () => {
-    const galleryImages = [
-        { id: 'photo1', src: '/images/image1.jpg' },
-        { id: 'photo2', src: '/images/image2.jpg' },
-        { id: 'photo3', src: '/images/image3.jpg' },
-        { id: 'photo4', src: '/images/image4.jpg' }
-    ];
-    galleryImages.forEach(item => {
-        const container = document.getElementById(item.id);
-        const img = container.querySelector('img');
-        img.src = item.src;
-        img.alt = `Winnie Through the Years - Photo`;
+        const cards = document.querySelectorAll('.animate-in');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 * index);
+        });
     });
-
-    const cards = document.querySelectorAll('.animate-in');
-    cards.forEach((card, index) => {
-        setTimeout(() => {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }, 100 * index);
-    });
-});
-
     </script>
 </body>
 </html>
