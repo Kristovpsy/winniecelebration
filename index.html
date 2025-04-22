@@ -14,17 +14,15 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Celebrating Winnie Lai-Solarin">
 
-
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* Framer-inspired design system with colors inspired by Winne's attire */
+        /* Framer-inspired design system with colors inspired by Winnie's attire */
         :root {
-            --primary: #ff7f50;        /* Rich burgundy from her headwrap */
-            --secondary: #FF4500;      /* Deep blue from her outfits */
-            --accent: #d97706;         /* Gold accent from her jewelry */
-            --background: #f8f5f0;     /* Warm off-white background */
+            --primary: #ff7f50;
+            --secondary: #FF4500;
+            --accent: #d97706;
+            --background: #f8f5f0;
             --card: #ffffff;
             --text: #333333;
             --text-light: #666666;
@@ -68,7 +66,6 @@
             letter-spacing: 1px;
         }
 
-        /* Layout components */
         .frame {
             max-width: 1200px;
             margin: 0 auto;
@@ -98,9 +95,8 @@
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         }
 
-        /* Components */
         .hero {
-            background: linear-gradient(120deg, var(--primary), var(--secondary)), url('path-to-background-image.jpg') no-repeat center/cover;
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
             padding: var(--spacing-xl) var(--spacing-md);
             color: white;
             text-align: center;
@@ -120,8 +116,6 @@
             background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
             pointer-events: none;
         }
-
-        
 
         .hero h1 {
             margin-bottom: var(--spacing-xs);
@@ -211,18 +205,13 @@
             margin-bottom: var(--spacing-md);
         }
 
-        /* Specific components */
         .qr-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: var(--spacing-lg);
-            background-color: var(--card);
-            border-radius: var(--border-radius-md);
-            box-shadow: var(--shadow-md);
             background: linear-gradient(120deg, var(--primary), var(--secondary));
             color: white;
-            padding: var(--spacing-lg);
             border-radius: var(--border-radius-md);
             box-shadow: var(--shadow-lg);
         }
@@ -288,6 +277,17 @@
             transform: scale(1.05);
         }
 
+        .gallery-item.fallback::after {
+            content: 'Image not found';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-light);
+            font-size: 1rem;
+            text-align: center;
+        }
+
         .wish-card {
             height: 100%;
         }
@@ -302,6 +302,14 @@
             font-style: italic;
         }
 
+        .guest-photo {
+            max-width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: var(--border-radius-sm);
+            margin-top: var(--spacing-xs);
+        }
+
         .african-pattern {
             background-image: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)), 
                               url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238b3a62' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
@@ -309,17 +317,15 @@
 
         footer {
             text-align: center;
-            padding: 2rem;
+            padding: var(--spacing-lg);
             background-color: var(--primary);
             color: white;
             margin-top: 3rem;
             border-top: 4px solid var(--secondary);
-            padding: var(--spacing-lg);
         }
 
-        /* Animation utilities */
         .animate-in {
-                        animation: fadeIn 0.6s ease-out forwards;
+            animation: fadeIn 0.6s ease-out forwards;
         }
 
         @keyframes fadeIn {
@@ -327,33 +333,18 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             h1 { font-size: 2rem; }
             h2 { font-size: 1.5rem; }
             h3 { font-size: 1.2rem; }
-            
             .grid {
                 grid-template-columns: 1fr;
             }
+            iframe {
+                width: 100%;
+                height: 600px;
+            }
         }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 1.8rem; }
-            .grid { grid-template-columns: 1fr; }
-        }
-        .guest-photo {
-    max-width: 100%;
-    max-height: 200px;
-    object-fit: cover;
-    border-radius: var(--border-radius-sm);
-    margin-top: var(--spacing-xs);
-}
     </style>
 </head>
 <body>
@@ -405,16 +396,13 @@
             <div class="stack">
                 <h2 class="section-title">Sign the Guestbook</h2>
                 <div class="card">
-                    <!-- Replace with your Google Form iframe -->
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdSLMKdnzXhFCjKOvjAmU4o2ycytd7dk2I0NVcEoVnWrFTP8A/viewform?embedded=true" width="640" height="507" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdSLMKdnzXhFCjKOvjAmU4o2ycytd7dk2I0NVcEoVnWrFTP8A/viewform?embedded=true" width="100%" height="507" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
                 </div>
             </div>
 
             <div class="stack">
                 <h2 class="section-title">Messages for Winnie</h2>
-                <div id="wishesContainer" class="stack">
-                    <!-- Messages will appear here -->
-                </div>
+                <div id="wishesContainer" class="stack"></div>
             </div>
 
             <div class="stack">
@@ -445,7 +433,7 @@
     <script>
     // Create QR code pointing to the Google Form
     new QRCode(document.getElementById("qrcode"), {
-        text: "https://docs.google.com/forms/d/e/1FAIpQLSdSLMKdnzXhFCjKOvjAmU4o2ycytd7dk2I0NVcEoVnWrFTP8A/viewform?usp=sharing ", // Replace with your Google Form’s shareable link
+        text: "https://docs.google.com/forms/d/e/1FAIpQLSdSLMKdnzXhFCjKOvjAmU4o2ycytd7dk2I0NVcEoVnWrFTP8A/viewform?usp=sharing",
         width: 180,
         height: 180,
         colorDark: "#8b3a62",
@@ -453,8 +441,8 @@
         correctLevel: QRCode.CorrectLevel.H
     });
 
-    // Google Sheets API URL (Apps Script for fetching responses)
-    const API_URL = 'https://script.google.com/macros/s/AKfycbx_0RIa5r0L72agP-tXe2Biy6shD8PDhpdoTKIZY_tx4WV8H5HJVGEczXxPIvw9IalGtw/exec'; // Replace with your new Apps Script URL
+    // Google Sheets API URL
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx_0RIa5r0L72agP-tXe2Biy6shD8PDhpdoTKIZY_tx4WV8H5HJVGEczXxPIvw9IalGtw/exec';
 
     // Display messages from Google Sheets
     const displayMessages = () => {
@@ -514,19 +502,34 @@
     const timer = setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // Fix gallery image loading
+    // Gallery image loading with error handling
     window.addEventListener('DOMContentLoaded', () => {
         const galleryImages = [
-            { id: 'photo1', src: '/images/image1.jpg' },
-            { id: 'photo2', src: '/images/image2.jpg' },
-            { id: 'photo3', src: '/images/image3.jpg' },
-            { id: 'photo4', src: '/images/image4.jpg' }
+            { id: 'photo1', src: '/images/image1.jpg', alt: 'Winnie Photo 1' },
+            { id: 'photo2', src: '/images/image2.jpg', alt: 'Winnie Photo 2' },
+            { id: 'photo3', src: '/images/image3.jpg', alt: 'Winnie Photo 3' },
+            { id: 'photo4', src: '/images/image4.jpg', alt: 'Winnie Photo 4' }
         ];
+
         galleryImages.forEach(item => {
             const container = document.getElementById(item.id);
-            const img = container.querySelector('img');
-            img.src = item.src;
-            img.alt = `Winnie Through the Years - Photo`;
+            if (container) {
+                const img = container.querySelector('img');
+                if (img) {
+                    img.src = item.src;
+                    img.alt = item.alt;
+                    // Add error handling for failed image loads
+                    img.onerror = () => {
+                        console.error(`Failed to load image: ${item.src}`);
+                        container.classList.add('fallback');
+                        img.style.display = 'none';
+                    };
+                } else {
+                    console.error(`No img element found in container #${item.id}`);
+                }
+            } else {
+                console.error(`Container #${item.id} not found`);
+            }
         });
 
         const cards = document.querySelectorAll('.animate-in');
