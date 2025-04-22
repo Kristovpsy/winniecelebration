@@ -409,16 +409,17 @@
                 <h2 class="section-title">Through the Years</h2>
                 <div class="grid grid-sm">
                     <div class="gallery-item" id="photo1">
-                        <img src="/images/image1.jpg" alt="Winnie Photo 1">
+                        <img src="image1.jpg">
                     </div>
                     <div class="gallery-item" id="photo2">
-                        <img src="/images/image2.jpg" alt="Winnie Photo 2">
+                        <img src="image2.jpg">
                     </div>
                     <div class="gallery-item" id="photo3">
-                        <img src="/images/image3.jpg" alt="Winnie Photo 3">
+                        <img src="image3.jpg">
                     </div>
                     <div class="gallery-item" id="photo4">
-                        <img src="/images/image4.jpg" alt="Winnie Photo 4">
+                        <img src="image4.jpg">
+                    </div>
                     </div>
                 </div>
             </div>
@@ -503,43 +504,41 @@
     updateCountdown();
 
     // Gallery image loading with error handling
-    window.addEventListener('DOMContentLoaded', () => {
-        const galleryImages = [
-            { id: 'photo1', src: '/images/image1.jpg', alt: 'Winnie Photo 1' },
-            { id: 'photo2', src: '/images/image2.jpg', alt: 'Winnie Photo 2' },
-            { id: 'photo3', src: '/images/image3.jpg', alt: 'Winnie Photo 3' },
-            { id: 'photo4', src: '/images/image4.jpg', alt: 'Winnie Photo 4' }
-        ];
-
-        galleryImages.forEach(item => {
-            const container = document.getElementById(item.id);
-            if (container) {
-                const img = container.querySelector('img');
-                if (img) {
-                    img.src = item.src;
-                    img.alt = item.alt;
-                    // Add error handling for failed image loads
-                    img.onerror = () => {
-                        console.error(`Failed to load image: ${item.src}`);
-                        container.classList.add('fallback');
-                        img.style.display = 'none';
-                    };
-                } else {
-                    console.error(`No img element found in container #${item.id}`);
-                }
-            } else {
-                console.error(`Container #${item.id} not found`);
-            }
+  window.addEventListener('DOMContentLoaded', () => {
+            // In a real implementation, these would be actual image paths
+            document.getElementById('heroImage').src = '/api/placeholder/150/150';
+            
+            // "Through the Years" photos
+            const photoContainers = [
+                document.getElementById('image1.jpg'),
+                document.getElementById('image2.jpg'),
+                document.getElementById('image3.jpg'),
+                document.getElementById('image4.jpg')
+            ];
+            
+            photoContainers.forEach((container, index) => {
+                const img = document.createElement('img');
+                img.src = `/api/placeholder/${300 + index}/${300 + index}`;
+                img.alt = `Winne Through the Years - Photo ${index + 1}`;
+                container.appendChild(img);
+            });
+            
+            // Initialize other functionality
+            updateCountdown();
+            displayMessages();
+            
+            // Staggered animation for cards
+            const cards = document.querySelectorAll('.animate-in');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+            
+            // Update countdown every second
+            const x = setInterval(updateCountdown, 1000);
         });
-
-        const cards = document.querySelectorAll('.animate-in');
-        cards.forEach((card, index) => {
-            setTimeout(() => {
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, 100 * index);
-        });
-    });
     </script>
 </body>
 </html>
